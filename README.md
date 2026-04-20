@@ -8,133 +8,133 @@
 
 ---
 
-## 🎯 Xcreate Nedir?
+## 🎯 What Is Xcreate?
 
-Xcreate, XOOPS için geliştirilmiş profesyonel bir içerik yönetim modülüdür. Kategori bazlı dinamik özel alanlar ile esnek içerik yapıları oluşturmanızı sağlar.
+Xcreate is a professional content management module developed for XOOPS. It lets you build flexible content structures with category-based dynamic custom fields.
 
-### Ana Özellikler
+### Key Features
 
-✅ **Dinamik İçerik Yapısı** - Her kategori için farklı alan setleri  
-✅ **14 Farklı Alan Tipi** - Text, textarea, select, checkbox, radio, date, file, image ve daha fazlası  
-✅ **Kategori Hiyerarşisi** - Sınırsız alt kategori desteği  
-✅ **Özel Template'ler** - Her kategori için özel görünüm  
-✅ **Tekrarlanabilir Alanlar** - Birden fazla değer girişi  
-✅ **Dosya Yönetimi** - Resim ve dosya yükleme sistemi  
-✅ **Multi-language** - Türkçe ve İngilizce dil desteği  
-✅ **Kullanıcı İzinleri** - Grup bazlı yetkilendirme  
+✅ **Dynamic Content Structure** - Different field sets for each category  
+✅ **14 Different Field Types** - Text, textarea, select, checkbox, radio, date, file, image, and more  
+✅ **Category Hierarchy** - Unlimited subcategory support  
+✅ **Custom Templates** - Custom view for each category  
+✅ **Repeatable Fields** - Enter multiple values for the same field  
+✅ **File Management** - Image and file upload system  
+✅ **Multi-language** - Turkish and English language support  
+✅ **User Permissions** - Group-based authorization  
 
 ---
 
-## 🚀 Hızlı Kurulum
+## 🚀 Quick Installation
 
-### 1. Modülü Yükleyin
+### 1. Upload the Module
 ```bash
-# ZIP dosyasını XOOPS ana dizinine açın
+# Extract the ZIP file into the XOOPS root directory
 unzip xcreate.zip
 mv xcreate modules/
 
-# İzinleri ayarlayın
+# Set permissions
 chmod -R 755 modules/xcreate
 ```
 
-### 2. Modülü Kurun
-1. XOOPS Admin paneline girin
-2. **Sistem > Modüller** bölümüne gidin
-3. **Xcreate** modülünü bulun
-4. **Kur** butonuna tıklayın
+### 2. Install the Module
+1. Log in to the XOOPS admin panel
+2. Go to **System > Modules**
+3. Find the **Xcreate** module
+4. Click the **Install** button
 
-### 3. İlk Yapılandırma
-1. **Xcreate > Kategoriler** - İlk kategorinizi oluşturun
-2. **Xcreate > Özel Alanlar** - Kategori için alanlar tanımlayın
-3. **Xcreate > İçerikler** - İçerik eklemeye başlayın
-
----
-
-## 📋 Alan Tipleri
-
-| Alan Tipi | Açıklama | Kullanım Alanı |
-|-----------|----------|----------------|
-| **text** | Tek satır metin | Başlık, ad, telefon |
-| **textarea** | Çok satırlı metin | Açıklama, adres |
-| **editor** | HTML editör | Zengin içerik |
-| **select** | Açılır liste | Seçim yapma |
-| **checkbox** | Çoklu seçim | Birden fazla seçenek |
-| **radio** | Tek seçim | Bir seçenek |
-| **date** | Tarih seçici | Doğum tarihi, tarih |
-| **datetime** | Tarih+Saat | Etkinlik zamanı |
-| **number** | Sayı girişi | Fiyat, miktar |
-| **email** | E-posta | İletişim |
-| **url** | Web adresi | Link |
-| **color** | Renk seçici | Tema rengi |
-| **image** | Resim yükleme | Görsel içerik |
-| **file** | Dosya yükleme | Döküman, PDF |
+### 3. Initial Configuration
+1. **Xcreate > Categories** - Create your first category
+2. **Xcreate > Custom Fields** - Define fields for the category
+3. **Xcreate > Items** - Start adding content
 
 ---
 
-## 💡 Kullanım Örnekleri
+## 📋 Field Types
 
-### Örnek 1: Gayrimenkul İlanları
-
-**Kategori:** Satılık Daireler
-
-**Özel Alanlar:**
-- Fiyat (number)
-- Metrekare (number)
-- Oda Sayısı (select: 1+1, 2+1, 3+1, 4+1)
-- Kat (number)
-- Isıtma (select: Kombi, Merkezi, Klima)
-- Cephe (radio: Kuzey, Güney, Doğu, Batı)
-- Özellikler (checkbox: Asansör, Otopark, Balkon, Güvenlik)
-- Fotoğraflar (image - tekrarlanabilir)
-
-### Örnek 2: İş İlanları
-
-**Kategori:** Yazılım
-
-**Özel Alanlar:**
-- Pozisyon (text)
-- Deneyim (select: 0-2 yıl, 2-5 yıl, 5+ yıl)
-- Maaş Aralığı (text)
-- Şirket (text)
-- Çalışma Şekli (radio: Ofis, Uzaktan, Hibrit)
-- Yetenekler (checkbox - tekrarlanabilir)
-- Başvuru Tarihi (date)
-- Logo (image)
-
-### Örnek 3: Ürün Kataloğu
-
-**Kategori:** Elektronik
-
-**Özel Alanlar:**
-- Marka (select)
-- Model (text)
-- Fiyat (number)
-- Stok (number)
-- Renk Seçenekleri (checkbox)
-- Garanti Süresi (number)
-- Ürün Görselleri (image - tekrarlanabilir)
-- Teknik Döküman (file)
+| Field Type | Description | Use Case |
+|-----------|-------------|----------|
+| **text** | Single-line text | Title, name, phone |
+| **textarea** | Multi-line text | Description, address |
+| **editor** | HTML editor | Rich content |
+| **select** | Dropdown list | Making a selection |
+| **checkbox** | Multiple choice | Multiple options |
+| **radio** | Single choice | One option |
+| **date** | Date picker | Birth date, date |
+| **datetime** | Date + Time | Event time |
+| **number** | Numeric input | Price, quantity |
+| **email** | Email address | Contact |
+| **url** | Web address | Link |
+| **color** | Color picker | Theme color |
+| **image** | Image upload | Visual content |
+| **file** | File upload | Document, PDF |
 
 ---
 
-## 🎨 Template Sistemi
+## 💡 Usage Examples
 
-### Varsayılan Template'ler
+### Example 1: Real Estate Listings
 
-Xcreate aşağıdaki template dosyalarını kullanır:
-- `xcreate_index.tpl` - Ana sayfa listesi
-- `xcreate_item.tpl` - İçerik detay sayfası
-- `xcreate_submit.tpl` - İçerik gönderme formu
+**Category:** Apartments for Sale
 
-### Özel Template Oluşturma
+**Custom Fields:**
+- Price (`number`)
+- Square Meters (`number`)
+- Room Count (`select: 1+1, 2+1, 3+1, 4+1`)
+- Floor (`number`)
+- Heating (`select: Combi Boiler, Central, Air Conditioning`)
+- Orientation (`radio: North, South, East, West`)
+- Features (`checkbox: Elevator, Parking, Balcony, Security`)
+- Photos (`image` - repeatable)
 
-Her kategori için özel template tanımlayabilirsiniz:
+### Example 2: Job Listings
 
-1. Kategori düzenlerken "Özel Template" alanına template adını yazın (örn: `gayrimenkul`)
-2. Template otomatik olarak `templates/gayrimenkul.tpl` konumunda oluşturulur
-3. Template'i özelleştirin
+**Category:** Software
 
-**Örnek Template Kodu:**
+**Custom Fields:**
+- Position (`text`)
+- Experience (`select: 0-2 years, 2-5 years, 5+ years`)
+- Salary Range (`text`)
+- Company (`text`)
+- Work Type (`radio: Office, Remote, Hybrid`)
+- Skills (`checkbox` - repeatable)
+- Application Date (`date`)
+- Logo (`image`)
+
+### Example 3: Product Catalog
+
+**Category:** Electronics
+
+**Custom Fields:**
+- Brand (`select`)
+- Model (`text`)
+- Price (`number`)
+- Stock (`number`)
+- Color Options (`checkbox`)
+- Warranty Period (`number`)
+- Product Images (`image` - repeatable)
+- Technical Document (`file`)
+
+---
+
+## 🎨 Template System
+
+### Default Templates
+
+Xcreate uses the following template files:
+- `xcreate_index.tpl` - Main page list
+- `xcreate_item.tpl` - Content detail page
+- `xcreate_submit.tpl` - Content submission form
+
+### Creating a Custom Template
+
+You can define a custom template for each category:
+
+1. While editing a category, enter the template name in the "Custom Template" field (example: `real-estate`)
+2. The template is automatically created at `templates/real-estate.tpl`
+3. Customize the template
+
+**Example Template Code:**
 ```smarty
 <div class="xcreate-item">
     <h1>{$item.title}</h1>
@@ -162,22 +162,22 @@ Her kategori için özel template tanımlayabilirsiniz:
 
 ---
 
-## 🔧 Tekrarlanabilir Alanlar
+## 🔧 Repeatable Fields
 
-Tekrarlanabilir alanlar, kullanıcıların aynı alana birden fazla değer girmesini sağlar.
+Repeatable fields allow users to enter multiple values for the same field.
 
-### Kullanım Alanları:
-- Birden fazla telefon numarası
-- Çoklu resim yükleme
-- Birden fazla e-posta adresi
-- Çoklu sosyal medya linki
+### Use Cases:
+- Multiple phone numbers
+- Multiple image uploads
+- More than one email address
+- Multiple social media links
 
-### Nasıl Etkinleştirilir:
-1. Özel alan oluştururken "Tekrarlanabilir" kutucuğunu işaretleyin
-2. Kullanıcı formda "+ Ekle" butonuyla yeni alan ekleyebilir
-3. Template'de tüm değerler array olarak gelir
+### How to Enable:
+1. Check the "Repeatable" box when creating the custom field
+2. The user can add another field in the form with the "+ Add" button
+3. In the template, all values are provided as an array
 
-**Template'de Kullanım:**
+**Usage in a Template:**
 ```smarty
 {foreach item=phone from=$field.values}
 <a href="tel:{$phone}">{$phone}</a>
@@ -186,92 +186,92 @@ Tekrarlanabilir alanlar, kullanıcıların aynı alana birden fazla değer girme
 
 ---
 
-## 🔐 İzinler ve Güvenlik
+## 🔐 Permissions and Security
 
-### Kullanıcı Yetkileri
-- **Görüntüleme:** Hangi kategorileri görebilir
-- **İçerik Gönderme:** Hangi kategorilere içerik ekleyebilir
-- **Düzenleme:** Kendi içeriklerini düzenleyebilir
-- **Silme:** Kendi içeriklerini silebilir
+### User Permissions
+- **View:** Which categories they can see
+- **Submit Content:** Which categories they can add content to
+- **Edit:** They can edit their own content
+- **Delete:** They can delete their own content
 
-### Admin Yetkileri
-- Tüm kategorilere tam erişim
-- Tüm içerikleri yönetme
-- Özel alan tanımlama
-- İzin ayarları
+### Admin Permissions
+- Full access to all categories
+- Manage all content
+- Define custom fields
+- Configure permission settings
 
-### Güvenlik Önlemleri
-✅ SQL Injection koruması  
-✅ XSS (Cross-Site Scripting) koruması  
-✅ CSRF token kontrolü  
-✅ Dosya yükleme güvenliği  
-✅ Extension kontrolü  
-✅ Boyut limiti  
+### Security Measures
+✅ SQL Injection protection  
+✅ XSS (Cross-Site Scripting) protection  
+✅ CSRF token validation  
+✅ File upload security  
+✅ Extension validation  
+✅ Size limit  
 
 ---
 
-## 📊 Veritabanı Yapısı
+## 📊 Database Structure
 
-### Tablolar
+### Tables
 
 **xcreate_categories**
-- Kategori bilgileri
-- Hiyerarşik yapı (parent_id)
-- Özel template bilgisi
+- Category information
+- Hierarchical structure (`parent_id`)
+- Custom template information
 
 **xcreate_fields**
-- Özel alan tanımları
-- Alan tipi ve özellikleri
-- Sıralama bilgisi
+- Custom field definitions
+- Field type and properties
+- Sort order information
 
 **xcreate_field_options**
-- Select, checkbox, radio seçenekleri
+- `select`, `checkbox`, `radio` options
 
 **xcreate_items**
-- İçerik kayıtları
-- Kategori ilişkisi
-- Durum bilgisi
+- Content records
+- Category relationship
+- Status information
 
 **xcreate_field_values**
-- Alan değerleri
-- Çoklu değer desteği
-- Dosya bilgileri
+- Field values
+- Multi-value support
+- File information
 
 ---
 
-## 🎛️ Modül Ayarları
+## 🎛️ Module Settings
 
-Admin panelinden yapılandırılabilir ayarlar:
+Configurable settings available from the admin panel:
 
-| Ayar | Açıklama | Varsayılan |
-|------|----------|------------|
-| **Sayfa Başına İçerik** | Liste sayfalarında gösterilecek içerik sayısı | 10 |
-| **Kullanıcı Gönderimi** | Kullanıcıların içerik göndermesine izin ver | Evet |
-| **Maksimum Dosya Boyutu** | Yüklenebilecek maksimum dosya boyutu (KB) | 2048 |
-| **İzin Verilen Uzantılar** | Yüklenebilecek dosya tipleri | jpg,jpeg,png,gif,pdf,doc,docx |
+| Setting | Description | Default |
+|--------|-------------|---------|
+| **Items Per Page** | Number of items to show on list pages | 10 |
+| **User Submission** | Allow users to submit content | Yes |
+| **Maximum File Size** | Maximum uploadable file size (KB) | 2048 |
+| **Allowed Extensions** | Uploadable file types | jpg,jpeg,png,gif,pdf,doc,docx |
 
 ---
 
-## 🔄 Güncelleme
+## 🔄 Upgrade
 
-### v1.51'e Güncelleme (Önceki Customfields'den)
+### Upgrading to v1.51 (from previous Customfields)
 
-1. **Yedek alın:**
+1. **Create a backup:**
 ```bash
 cp -r modules/customfields modules/customfields.backup
 mysqldump -u root -p xoops_db > backup.sql
 ```
 
-2. **Dosyaları güncelleyin:**
+2. **Update the files:**
 ```bash
 unzip xcreate.zip
 rm -rf modules/customfields
 mv xcreate modules/
 ```
 
-3. **Veritabanını güncelleyin:**
+3. **Update the database:**
 ```sql
--- Tablo isimlerini değiştirin
+-- Rename the tables
 RENAME TABLE customfields_categories TO xcreate_categories;
 RENAME TABLE customfields_fields TO xcreate_fields;
 RENAME TABLE customfields_field_options TO xcreate_field_options;
@@ -279,50 +279,50 @@ RENAME TABLE customfields_items TO xcreate_items;
 RENAME TABLE customfields_field_values TO xcreate_field_values;
 ```
 
-4. **XOOPS'ta modülü güncelleyin:**
-   - Admin > Modüller > Xcreate > Güncelle
+4. **Update the module in XOOPS:**
+   - Admin > Modules > Xcreate > Update
 
 ---
 
-## 🐛 Sorun Giderme
+## 🐛 Troubleshooting
 
-### Silme İşlemi Çalışmıyor
+### Delete Action Does Not Work
 
-**Çözüm:** v1.51'de düzeltildi. Eğer hala sorun varsa:
+**Solution:** Fixed in v1.51. If the problem still exists:
 ```php
-// Debug mode açın
+// Enable debug mode
 define('XOOPS_DEBUG_MODE', 1);
 
-// Veritabanı hatalarını kontrol edin
+// Check database errors
 echo $xoopsDB->error();
 ```
 
-### Constant Already Defined Hatası
+### Constant Already Defined Error
 
-**Çözüm:** v1.51'de düzeltildi. Cache temizleyin:
+**Solution:** Fixed in v1.51. Clear the cache:
 ```bash
 rm -rf cache/*
 rm -rf templates_c/*
 ```
 
-### Dosya Yükleme Çalışmıyor
+### File Upload Does Not Work
 
-**Kontrol listesi:**
-- PHP upload_max_filesize yeterli mi?
-- uploads/xcreate klasörü var mı?
-- İzinler doğru mu? (755)
-- Dosya uzantısı izin verilen listede mi?
+**Checklist:**
+- Is `PHP upload_max_filesize` large enough?
+- Does the `uploads/xcreate` folder exist?
+- Are the permissions correct? (`755`)
+- Is the file extension in the allowed list?
 
 ---
 
-## 📚 API ve Entegrasyon
+## 📚 API and Integration
 
-### Smarty Plugin Kullanımı
+### Smarty Plugin Usage
 
-Template'lerde Xcreate verilerini göstermek için:
+To display Xcreate data in templates:
 
 ```smarty
-{* Kategoriye ait son 5 içeriği göster *}
+{* Show the latest 5 items from the category *}
 {xcreate cat_id=1 limit=5 assign=items}
 
 {foreach item=item from=$items}
@@ -331,14 +331,14 @@ Template'lerde Xcreate verilerini göstermek için:
 {/foreach}
 ```
 
-### PHP'de Kullanım
+### PHP Usage
 
 ```php
-// Handler'ı yükle
+// Load the handler
 include_once XOOPS_ROOT_PATH . '/modules/xcreate/class/item.php';
 $itemHandler = new XcreateItemHandler($xoopsDB);
 
-// Son içerikleri getir
+// Get recent items
 $items = $itemHandler->getRecentItems(10);
 
 foreach ($items as $item) {
@@ -348,64 +348,64 @@ foreach ($items as $item) {
 
 ---
 
-## 📞 Destek ve İletişim
+## 📞 Support and Contact
 
-### Dokümantasyon
-- **README.md** - Bu dosya
-- **CHANGELOG.md** - Versiyon geçmişi
-- XOOPS forumları
+### Documentation
+- **README.md** - This file
+- **CHANGELOG.md** - Version history
+- XOOPS forums
 
-### Hata Bildirimi
-Sorun yaşarsanız:
-1. XOOPS debug mode'u açın
-2. PHP error log'larını kontrol edin
-3. Veritabanı hatalarını inceleyin
-4. Sorunu detaylı açıklayarak bildirin
+### Bug Reports
+If you experience a problem:
+1. Enable XOOPS debug mode
+2. Check the PHP error logs
+3. Review database errors
+4. Report the issue with a detailed description
 
 ---
 
-## ✅ Özellik Listesi
+## ✅ Feature List
 
-### ✅ Tamamlanan Özellikler
-- [x] Kategori yönetimi (hiyerarşik)
-- [x] 14 farklı alan tipi
-- [x] Tekrarlanabilir alanlar
-- [x] Özel template sistemi
-- [x] Dosya ve resim yükleme
-- [x] Multi-language desteği
-- [x] Kullanıcı izinleri
-- [x] Admin paneli
+### ✅ Completed Features
+- [x] Category management (hierarchical)
+- [x] 14 different field types
+- [x] Repeatable fields
+- [x] Custom template system
+- [x] File and image uploads
+- [x] Multi-language support
+- [x] User permissions
+- [x] Admin panel
 - [x] Smarty plugin
-- [x] Silme işlemleri (v1.51)
-- [x] Hata düzeltmeleri (v1.51)
+- [x] Delete operations (v1.51)
+- [x] Bug fixes (v1.51)
 
-### 🔜 Gelecek Özellikler (v1.6)
+### 🔜 Upcoming Features (v1.6)
 - [ ] REST API
 - [ ] Import/Export
-- [ ] Toplu işlemler
-- [ ] Alan validasyonu geliştirmeleri
-- [ ] Icon setleri
-- [ ] Daha fazla alan tipi
+- [ ] Bulk actions
+- [ ] Field validation improvements
+- [ ] Icon sets
+- [ ] More field types
 
 ---
 
-## 📜 Lisans
+## 📜 License
 
-Bu modül GPL (GNU General Public License) lisansı altında dağıtılmaktadır.
-
----
-
-## 🙏 Teşekkürler
-
-- XOOPS topluluğuna
-- Modülü test eden kullanıcılara
-- Geri bildirim sağlayan herkese
+This module is distributed under the GPL (GNU General Public License).
 
 ---
 
-**Xcreate ile profesyonel içerik yönetimi! 🚀**
+## 🙏 Thanks
+
+- To the XOOPS community
+- To the users who tested the module
+- To everyone who provided feedback
+
+---
+
+**Professional content management with Xcreate! 🚀**
 
 **Version:** 1.51  
-**Date:** 25 Kasım 2024  
+**Date:** November 25, 2024  
 **Developer:** Eren - Aymak  
 **Website:** https://aymak.com.tr
