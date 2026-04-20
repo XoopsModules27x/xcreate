@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>xcreate — XOOPS İçerik Yönetim Modülü</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --bg:        #080b10;
+  --bg2:       #0d1117;
+  --bg3:       #141b24;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --accent:    #3b82f6;
+  --accent2:   #06b6d4;
+  --accent3:   #8b5cf6;
+  --gold:      #f59e0b;
+  --text:      #e2e8f0;
+  --muted:     #64748b;
+  --muted2:    #94a3b8;
+  --font-head: 'Syne', sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+  --r:         12px;
+  --r2:        20px;
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   NOISE TEXTURE OVERLAY
+═══════════════════════════════════════ */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9999; opacity: 0.4;
+}
+
+/* ═══════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════ */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+/* ═══════════════════════════════════════
+   NAV
+═══════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: rgba(8,11,16,0.8);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #fff 30%, var(--accent2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.nav-badge {
+  font-family: var(--font-mono);
+  font-size: 11px; color: var(--accent);
+  border: 1px solid rgba(59,130,246,0.3);
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(59,130,246,0.08);
+  margin-left: 10px; vertical-align: middle;
+  -webkit-text-fill-color: var(--accent);
+}
+.nav-links { display: flex; gap: 32px; }
+.nav-links a {
+  color: var(--muted2); text-decoration: none;
+  font-size: 14px; font-weight: 400;
+  transition: color .2s;
+}
+.nav-links a:hover { color: #fff; }
+.nav-cta {
+  background: var(--accent); color: #fff !important;
+  padding: 8px 20px; border-radius: 8px;
+  font-weight: 500; font-size: 14px !important;
+  transition: background .2s, transform .15s !important;
+}
+.nav-cta:hover { background: #2563eb; transform: translateY(-1px); }
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 120px 24px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradient orbs */
+.hero::before {
+  content: '';
+  position: absolute; width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(59,130,246,0.15) 0%, transparent 70%);
+  top: 10%; left: 50%; transform: translateX(-50%);
+  pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute; width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%);
+  bottom: 20%; right: 10%;
+  pointer-events: none;
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 12px;
+  color: var(--accent2); letter-spacing: 2px; text-transform: uppercase;
+  border: 1px solid rgba(6,182,212,0.25);
+  background: rgba(6,182,212,0.06);
+  padding: 6px 16px; border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeUp .6s ease both;
+}
+.hero-eyebrow::before {
+  content: ''; width: 6px; height: 6px;
+  background: var(--accent2); border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50% { opacity:.4; transform:scale(1.3); }
+}
+
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  line-height: .95;
+  letter-spacing: -3px;
+  margin-bottom: 6px;
+  animation: fadeUp .6s .1s ease both;
+}
+.hero h1 .word-x {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.hero h1 .word-create { color: #fff; }
+
+.hero-sub {
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: var(--muted2); font-weight: 300;
+  max-width: 560px; margin: 20px auto 40px;
+  animation: fadeUp .6s .2s ease both;
+}
+
+.hero-actions {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp .6s .3s ease both;
+  margin-bottom: 64px;
+}
+.btn-primary {
+  background: var(--accent); color: #fff;
+  padding: 14px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 600; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 0 40px rgba(59,130,246,0.3);
+}
+.btn-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 0 60px rgba(59,130,246,0.5); }
+.btn-secondary {
+  background: transparent; color: var(--text);
+  padding: 14px 32px; border-radius: 10px;
+  font-size: 15px; font-weight: 500; text-decoration: none;
+  border: 1px solid var(--border2);
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: background .2s, border-color .2s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.05); border-color: var(--muted2); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex; gap: 48px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp .6s .4s ease both;
+}
+.stat { text-align: center; }
+.stat-num {
+  font-family: var(--font-head); font-size: 36px; font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--muted2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  display: block;
+}
+.stat-label { font-size: 13px; color: var(--muted); font-family: var(--font-mono); }
+
+/* ═══════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════ */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 24px; }
+section { padding: 100px 0; }
+
+.section-label {
+  font-family: var(--font-mono); font-size: 11px;
+  color: var(--accent); letter-spacing: 3px; text-transform: uppercase;
+  margin-bottom: 16px; display: block;
+}
+.section-title {
+  font-family: var(--font-head); font-size: clamp(32px, 4vw, 52px);
+  font-weight: 800; line-height: 1.1; letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+.section-desc {
+  font-size: 17px; color: var(--muted2); max-width: 520px;
+  font-weight: 300; line-height: 1.7;
+}
+
+/* ═══════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2) 30%, var(--border2) 70%, transparent);
+}
+
+/* ═══════════════════════════════════════
+   FIELD TYPES SECTION
+═══════════════════════════════════════ */
+.fields-section { background: var(--bg2); }
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  margin-top: 56px;
+}
+.field-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 22px 20px;
+  display: flex; align-items: flex-start; gap: 14px;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  cursor: default;
+  animation: fadeUp .5s ease both;
+}
+.field-card:hover {
+  border-color: var(--border2);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.field-icon {
+  width: 38px; height: 38px; border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.field-info { flex: 1; }
+.field-name {
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+  color: #fff; margin-bottom: 3px;
+}
+.field-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+
+/* Field icon colors */
+.fi-text    { background: rgba(59,130,246,0.15); }
+.fi-textarea{ background: rgba(99,102,241,0.15); }
+.fi-editor  { background: rgba(139,92,246,0.15); }
+.fi-image   { background: rgba(236,72,153,0.15); }
+.fi-gallery { background: rgba(244,63,94,0.15); }
+.fi-file    { background: rgba(245,158,11,0.15); }
+.fi-select  { background: rgba(16,185,129,0.15); }
+.fi-checkbox{ background: rgba(6,182,212,0.15); }
+.fi-radio   { background: rgba(20,184,166,0.15); }
+.fi-date    { background: rgba(59,130,246,0.15); }
+.fi-datetime{ background: rgba(99,102,241,0.15); }
+.fi-number  { background: rgba(245,158,11,0.15); }
+.fi-email   { background: rgba(16,185,129,0.15); }
+.fi-url     { background: rgba(6,182,212,0.15); }
+.fi-color   { background: rgba(244,63,94,0.15); }
+
+/* ═══════════════════════════════════════
+   FEATURES BENTO GRID
+═══════════════════════════════════════ */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 16px;
+  margin-top: 56px;
+}
+.bento-card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 32px;
+  transition: border-color .25s, transform .2s;
+  position: relative; overflow: hidden;
+}
+.bento-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.bento-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at top left, rgba(59,130,246,0.04), transparent 60%);
+  pointer-events: none;
+}
+
+.bc-1 { grid-column: span 7; }
+.bc-2 { grid-column: span 5; }
+.bc-3 { grid-column: span 4; }
+.bc-4 { grid-column: span 4; }
+.bc-5 { grid-column: span 4; }
+.bc-6 { grid-column: span 5; }
+.bc-7 { grid-column: span 7; }
+
+.bento-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 20px;
+}
+.bi-blue   { background: rgba(59,130,246,0.15); }
+.bi-purple { background: rgba(139,92,246,0.15); }
+.bi-cyan   { background: rgba(6,182,212,0.15); }
+.bi-green  { background: rgba(16,185,129,0.15); }
+.bi-gold   { background: rgba(245,158,11,0.15); }
+.bi-pink   { background: rgba(236,72,153,0.15); }
+.bi-red    { background: rgba(244,63,94,0.15); }
+
+.bento-title {
+  font-family: var(--font-head); font-size: 22px; font-weight: 700;
+  letter-spacing: -.5px; margin-bottom: 10px;
+}
+.bento-desc { font-size: 15px; color: var(--muted2); line-height: 1.65; font-weight: 300; }
+
+/* Code snippet inside bento */
+.bento-code {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px;
+  margin-top: 18px; font-family: var(--font-mono);
+  font-size: 12px; line-height: 1.8;
+  overflow-x: auto;
+}
+.c-tag   { color: #60a5fa; }
+.c-attr  { color: #a5b4fc; }
+.c-val   { color: #86efac; }
+.c-var   { color: #fde68a; }
+.c-muted { color: var(--muted); }
+
+/* Tag list */
+.tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tag {
+  font-family: var(--font-mono); font-size: 12px;
+  padding: 5px 12px; border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,0.03);
+  color: var(--muted2);
+}
+.tag.accent { border-color: rgba(59,130,246,0.4); color: #93c5fd; background: rgba(59,130,246,0.08); }
+.tag.green  { border-color: rgba(16,185,129,0.4); color: #6ee7b7; background: rgba(16,185,129,0.08); }
+.tag.gold   { border-color: rgba(245,158,11,0.4); color: #fcd34d; background: rgba(245,158,11,0.08); }
+.tag.purple { border-color: rgba(139,92,246,0.4); color: #c4b5fd; background: rgba(139,92,246,0.08); }
+
+/* ═══════════════════════════════════════
+   RATING SHOWCASE
+═══════════════════════════════════════ */
+.rating-section { background: var(--bg2); }
+
+.rating-demo {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 40px;
+  margin-top: 56px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+  align-items: center;
+}
+.rating-visual { }
+.rating-stars-demo {
+  display: flex; gap: 6px; margin-bottom: 14px;
+}
+.star-d {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: rgba(245,158,11,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--gold);
+  animation: starPop .4s ease both;
+}
+.star-d.empty { color: var(--border2); background: transparent; }
+@keyframes starPop {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.star-d:nth-child(1) { animation-delay: .05s; }
+.star-d:nth-child(2) { animation-delay: .10s; }
+.star-d:nth-child(3) { animation-delay: .15s; }
+.star-d:nth-child(4) { animation-delay: .20s; }
+.star-d:nth-child(5) { animation-delay: .25s; }
+
+.rating-score-big {
+  font-family: var(--font-head); font-size: 72px; font-weight: 800;
+  letter-spacing: -3px; line-height: 1;
+  background: linear-gradient(135deg, var(--gold), #fbbf24);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.rating-meta { font-size: 14px; color: var(--muted); margin-top: 6px; font-family: var(--font-mono); }
+
+.dist-bars { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
+.dist-row-demo { display: flex; align-items: center; gap: 10px; }
+.dist-lbl { font-family: var(--font-mono); font-size: 12px; color: var(--muted); width: 24px; text-align: right; }
+.dist-bar-bg { flex: 1; height: 8px; background: var(--bg2); border-radius: 4px; overflow: hidden; }
+.dist-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--gold), #fbbf24); transition: width 1s ease; }
+.dist-cnt { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 28px; }
+
+.rating-info { }
+.rating-info h3 { font-family: var(--font-head); font-size: 28px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 16px; }
+.rating-info p  { font-size: 15px; color: var(--muted2); line-height: 1.7; font-weight: 300; margin-bottom: 20px; }
+.rating-feat-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.rating-feat-list li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 14px; color: var(--muted2);
+}
+.rating-feat-list li::before {
+  content: '✓'; width: 20px; height: 20px;
+  background: rgba(16,185,129,0.15); color: #6ee7b7;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0; margin-top: 1px;
+}
+
+/* ═══════════════════════════════════════
+   SEO & TEMPLATE SECTION
+═══════════════════════════════════════ */
+.seo-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+  margin-top: 56px;
+}
+.info-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 36px;
+  transition: border-color .2s;
+}
+.info-card:hover { border-color: var(--border2); }
+.info-card-icon { font-size: 32px; margin-bottom: 18px; display: block; }
+.info-card h3 { font-family: var(--font-head); font-size: 22px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 12px; }
+.info-card p  { font-size: 15px; color: var(--muted2); line-height: 1.7; font-weight: 300; }
+.info-card .tag-list { margin-top: 20px; }
+
+/* ═══════════════════════════════════════
+   ADMIN PANEL SECTION
+═══════════════════════════════════════ */
+.admin-section { background: var(--bg2); }
+
+.admin-features {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; margin-top: 56px;
+}
+.admin-feat {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 28px 24px;
+  transition: border-color .2s, transform .2s;
+}
+.admin-feat:hover { border-color: var(--border2); transform: translateY(-2px); }
+.admin-feat-icon { font-size: 28px; margin-bottom: 14px; display: block; }
+.admin-feat h4 { font-family: var(--font-head); font-size: 17px; font-weight: 700; margin-bottom: 8px; letter-spacing: -.3px; }
+.admin-feat p  { font-size: 14px; color: var(--muted2); line-height: 1.6; font-weight: 300; }
+
+/* ═══════════════════════════════════════
+   TEMPLATE TAG REFERENCE
+═══════════════════════════════════════ */
+.tpl-section { }
+.tpl-tabs { display: flex; gap: 4px; margin-bottom: 24px; margin-top: 56px; }
+.tpl-tab {
+  padding: 8px 20px; border-radius: 8px; font-size: 13px;
+  font-family: var(--font-mono); cursor: pointer; border: 1px solid var(--border);
+  background: transparent; color: var(--muted2); transition: all .2s;
+}
+.tpl-tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+.tpl-panel { display: none; }
+.tpl-panel.active { display: block; }
+.code-block {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 24px;
+  font-family: var(--font-mono); font-size: 13px;
+  line-height: 2; overflow-x: auto;
+}
+.code-block .cmt  { color: var(--muted); }
+.code-block .kw   { color: #60a5fa; }
+.code-block .var  { color: #fde68a; }
+.code-block .str  { color: #86efac; }
+.code-block .tag  { color: #f9a8d4; }
+.code-block .attr { color: #a5b4fc; }
+
+/* ═══════════════════════════════════════
+   FOOTER CTA
+═══════════════════════════════════════ */
+.cta-section {
+  text-align: center; padding: 120px 24px;
+  position: relative; overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute; width: 800px; height: 400px;
+  background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%; transform: translate(-50%,-50%);
+  pointer-events: none;
+}
+.cta-section h2 {
+  font-family: var(--font-head); font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800; letter-spacing: -2px; margin-bottom: 16px;
+}
+.cta-section p {
+  font-size: 18px; color: var(--muted2); margin-bottom: 40px; font-weight: 300;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-logo {
+  font-family: var(--font-head); font-size: 18px; font-weight: 800;
+  background: linear-gradient(135deg, #fff, var(--muted2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.footer-copy { font-size: 13px; color: var(--muted); font-family: var(--font-mono); }
+.footer-badge {
+  font-family: var(--font-mono); font-size: 12px; color: var(--muted2);
+}
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; transform: translateY(32px); transition: opacity .6s ease, transform .6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* Stagger children */
+.stagger > * { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; }
+.stagger.visible > *:nth-child(1)  { opacity:1; transform:none; transition-delay: .05s; }
+.stagger.visible > *:nth-child(2)  { opacity:1; transform:none; transition-delay: .10s; }
+.stagger.visible > *:nth-child(3)  { opacity:1; transform:none; transition-delay: .15s; }
+.stagger.visible > *:nth-child(4)  { opacity:1; transform:none; transition-delay: .20s; }
+.stagger.visible > *:nth-child(5)  { opacity:1; transform:none; transition-delay: .25s; }
+.stagger.visible > *:nth-child(6)  { opacity:1; transform:none; transition-delay: .30s; }
+.stagger.visible > *:nth-child(7)  { opacity:1; transform:none; transition-delay: .35s; }
+.stagger.visible > *:nth-child(8)  { opacity:1; transform:none; transition-delay: .40s; }
+.stagger.visible > *:nth-child(9)  { opacity:1; transform:none; transition-delay: .45s; }
+.stagger.visible > *:nth-child(10) { opacity:1; transform:none; transition-delay: .50s; }
+.stagger.visible > *:nth-child(11) { opacity:1; transform:none; transition-delay: .55s; }
+.stagger.visible > *:nth-child(12) { opacity:1; transform:none; transition-delay: .60s; }
+.stagger.visible > *:nth-child(n+13) { opacity:1; transform:none; transition-delay: .65s; }
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 16px 24px; }
+  .nav-links { display: none; }
+  .bc-1,.bc-2,.bc-3,.bc-4,.bc-5,.bc-6,.bc-7 { grid-column: span 12; }
+  .rating-demo { grid-template-columns: 1fr; }
+  .seo-grid { grid-template-columns: 1fr; }
+  .admin-features { grid-template-columns: 1fr 1fr; }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
+}
+@media (max-width: 600px) {
+  .admin-features { grid-template-columns: 1fr; }
+  .fields-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats { gap: 28px; }
+}
+
+/* SMARTY PLUGIN SECTION */
+.plugin-section { background: var(--bg2); }
+.plugin-hero {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--r2); padding: 36px 40px; margin-top: 56px;
+  display: flex; align-items: flex-start; gap: 32px;
+  position: relative; overflow: hidden;
+}
+.plugin-hero::before {
+  content:''; position:absolute; top:0; right:0; width:300px; height:100%;
+  background:radial-gradient(circle at right,rgba(139,92,246,0.08),transparent 70%);
+  pointer-events:none;
+}
+.plugin-badge {
+  background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(59,130,246,0.2));
+  border:1px solid rgba(139,92,246,0.35); border-radius:var(--r);
+  padding:18px 22px; text-align:center; flex-shrink:0; min-width:120px;
+}
+.plugin-badge-icon { font-size:36px; display:block; margin-bottom:8px; }
+.plugin-badge-label { font-family:var(--font-mono); font-size:11px; color:#c4b5fd; letter-spacing:1px; text-transform:uppercase; }
+.plugin-hero-content h3 { font-family:var(--font-head); font-size:26px; font-weight:700; letter-spacing:-.5px; margin-bottom:10px; }
+.plugin-hero-content p  { font-size:15px; color:var(--muted2); line-height:1.7; font-weight:300; }
+.plugin-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:32px; }
+.plugin-params, .plugin-vars {
+  background:var(--bg3); border:1px solid var(--border);
+  border-radius:var(--r2); padding:32px; margin-top:32px;
+}
+.plugin-params h3, .plugin-vars h3 {
+  font-family:var(--font-head); font-size:20px; font-weight:700;
+  letter-spacing:-.3px; margin-bottom:20px;
+}
+.param-table { width:100%; border-collapse:collapse; }
+.param-table th {
+  font-family:var(--font-mono); font-size:11px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--muted);
+  padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+}
+.param-table td { padding:12px 14px; font-size:14px; border-bottom:1px solid var(--border); vertical-align:top; }
+.param-table tr:last-child td { border-bottom:none; }
+.param-table tr:hover td { background:rgba(255,255,255,0.02); }
+.param-name  { font-family:var(--font-mono); font-size:13px; color:#fde68a; font-weight:500; }
+.param-type  { font-family:var(--font-mono); font-size:12px; color:var(--accent2); white-space:nowrap; }
+.param-default { font-family:var(--font-mono); font-size:12px; color:#86efac; }
+.param-desc  { color:var(--muted2); line-height:1.5; }
+.var-group   { margin-bottom:20px; }
+.var-group-title { font-family:var(--font-mono); font-size:11px; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:10px; display:block; }
+.var-list    { display:flex; flex-direction:column; gap:6px; }
+.var-row     { display:flex; align-items:baseline; gap:12px; padding:8px 12px; border-radius:8px; background:var(--bg2); border:1px solid var(--border); font-size:13px; }
+.var-name    { font-family:var(--font-mono); color:#fde68a; min-width:270px; flex-shrink:0; }
+.var-desc    { color:var(--muted2); }
+.install-steps { display:flex; flex-direction:column; gap:0; margin-top:20px; }
+.install-step { display:flex; gap:16px; align-items:flex-start; padding:18px 0; border-bottom:1px solid var(--border); }
+.install-step:last-child { border-bottom:none; }
+.step-num { width:32px; height:32px; border-radius:50%; flex-shrink:0; background:rgba(59,130,246,0.15); border:1px solid rgba(59,130,246,0.3); display:flex; align-items:center; justify-content:center; font-family:var(--font-mono); font-size:13px; color:var(--accent); font-weight:600; }
+.step-content { flex:1; }
+.step-title { font-size:15px; font-weight:500; margin-bottom:4px; }
+.step-desc  { font-size:13px; color:var(--muted2); }
+.step-path  { font-family:var(--font-mono); font-size:12px; color:#86efac; background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); padding:4px 10px; border-radius:5px; display:inline-block; margin-top:6px; }
+@media (max-width:900px) {
+  .plugin-hero { flex-direction:column; }
+  .plugin-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div>
+    <span class="nav-logo">xcreate</span>
+    <span class="nav-badge">v1.6</span>
+  </div>
+  <div class="nav-links">
+    <a href="#alan-tipleri">Alan Tipleri</a>
+    <a href="#ozellikler">Özellikler</a>
+    <a href="#oylama">Oylama</a>
+    <a href="#template">Template</a>
+    <a href="#admin">Admin</a>
+    <a href="#smarty-plugin">Smarty Plugin</a>
+    <a href="#kurulum" class="nav-cta">Kurulum</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">XOOPS CMS Modülü</div>
+  <h1>
+    <span class="word-x">x</span><span class="word-create">create</span>
+  </h1>
+  <p class="hero-sub">
+    XOOPS için tam özellikli, özelleştirilebilir içerik yönetim modülü.<br>
+    15 alan tipi, SEO URL, yıldızlı oylama ve çok daha fazlası.
+  </p>
+  <div class="hero-actions">
+    <a href="#ozellikler" class="btn-primary">
+      <span>✦</span> Özellikleri Keşfet
+    </a>
+    <a href="#template" class="btn-secondary">
+      <span>{ }</span> Template Referansı
+    </a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <span class="stat-num">15</span>
+      <span class="stat-label">Alan Tipi</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">∞</span>
+      <span class="stat-label">Kategori</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">SEO</span>
+      <span class="stat-label">URL Desteği</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">★</span>
+      <span class="stat-label">Oylama Sistemi</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FIELD TYPES -->
+<section class="fields-section" id="alan-tipleri">
+  <div class="container">
+    <span class="section-label reveal">Alan Tipleri</span>
+    <h2 class="section-title reveal">15 Farklı Alan Tipi</h2>
+    <p class="section-desc reveal">Her içerik ihtiyacı için hazır alan tipleri. Tekli veya tekrarlanabilir olarak kullanın.</p>
+
+    <div class="fields-grid stagger">
+      <div class="field-card">
+        <div class="field-icon fi-text">📝</div>
+        <div class="field-info">
+          <div class="field-name">text</div>
+          <div class="field-desc">Kısa metin girişi, tek satır</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-textarea">📄</div>
+        <div class="field-info">
+          <div class="field-name">textarea</div>
+          <div class="field-desc">Uzun metin, çok satırlı alan</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-editor">✏️</div>
+        <div class="field-info">
+          <div class="field-name">editor</div>
+          <div class="field-desc">WYSIWYG zengin metin editörü</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-image">🖼️</div>
+        <div class="field-info">
+          <div class="field-name">image</div>
+          <div class="field-desc">Tek resim yükleme alanı</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-gallery">🗂️</div>
+        <div class="field-info">
+          <div class="field-name">gallery</div>
+          <div class="field-desc">Çoklu resim galerisi</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-file">📎</div>
+        <div class="field-info">
+          <div class="field-name">file</div>
+          <div class="field-desc">Dosya yükleme, her format</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-select">▾</div>
+        <div class="field-info">
+          <div class="field-name">select</div>
+          <div class="field-desc">Açılır liste seçimi</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-checkbox">☑</div>
+        <div class="field-info">
+          <div class="field-name">checkbox</div>
+          <div class="field-desc">Çoklu seçim kutuları</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-radio">◉</div>
+        <div class="field-info">
+          <div class="field-name">radio</div>
+          <div class="field-desc">Tekli seçim radyo butonları</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-date">📅</div>
+        <div class="field-info">
+          <div class="field-name">date</div>
+          <div class="field-desc">Tarih seçici</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-datetime">🕐</div>
+        <div class="field-info">
+          <div class="field-name">datetime</div>
+          <div class="field-desc">Tarih ve saat birlikte</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-number">🔢</div>
+        <div class="field-info">
+          <div class="field-name">number</div>
+          <div class="field-desc">Sayısal değer girişi</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-email">📧</div>
+        <div class="field-info">
+          <div class="field-name">email</div>
+          <div class="field-desc">E-posta adresi, otomatik link</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-url">🔗</div>
+        <div class="field-info">
+          <div class="field-name">url</div>
+          <div class="field-desc">Web adresi, otomatik link</div>
+        </div>
+      </div>
+      <div class="field-card">
+        <div class="field-icon fi-color">🎨</div>
+        <div class="field-info">
+          <div class="field-name">color</div>
+          <div class="field-desc">Renk seçici, hex değer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES BENTO -->
+<section id="ozellikler">
+  <div class="container">
+    <span class="section-label reveal">Temel Özellikler</span>
+    <h2 class="section-title reveal">Güçlü Altyapı,<br>Kolay Kullanım</h2>
+    <p class="section-desc reveal">Geliştiriciler ve site yöneticileri için tasarlanmış kapsamlı özellik seti.</p>
+
+    <div class="bento">
+
+      <div class="bento-card bc-1 reveal">
+        <div class="bento-icon bi-blue">🔗</div>
+        <div class="bento-title">SEO Dostu URL'ler</div>
+        <div class="bento-desc">Kategori ve içerik slug'ları ile temiz, okunabilir URL'ler. Türkçe karakter desteğiyle tam uyumlu. Eski ?id= formatı otomatik 301 yönlendirme ile korunur.</div>
+        <div class="bento-code">
+          <span class="c-muted"># Temiz URL yapısı</span><br>
+          <span class="c-tag">/modules/xcreate/</span><span class="c-val">kategori-adi</span><span class="c-tag">/</span><span class="c-val">icerik-basligi</span><br><br>
+          <span class="c-muted"># Eski format → otomatik yönlendirir</span><br>
+          <span class="c-tag">/modules/xcreate/item.php?id=</span><span class="c-val">42</span>
+        </div>
+      </div>
+
+      <div class="bento-card bc-2 reveal">
+        <div class="bento-icon bi-purple">🔄</div>
+        <div class="bento-title">Tekrarlanabilir Alanlar</div>
+        <div class="bento-desc">Her alan tipi tekrarlanabilir olarak işaretlenebilir. Sürükle-bırak sıralama ile birden fazla değer girilebilir.</div>
+        <div class="tag-list">
+          <span class="tag accent">repeatable: true</span>
+          <span class="tag green">drag & drop sıralama</span>
+          <span class="tag">sınırsız kayıt</span>
+        </div>
+      </div>
+
+      <div class="bento-card bc-3 reveal">
+        <div class="bento-icon bi-cyan">📂</div>
+        <div class="bento-title">Hiyerarşik Kategoriler</div>
+        <div class="bento-desc">Sonsuz iç içe kategori desteği. Her kategorinin kendine özel alan setleri, liste ve detay şablonları olabilir.</div>
+      </div>
+
+      <div class="bento-card bc-4 reveal">
+        <div class="bento-icon bi-green">⚡</div>
+        <div class="bento-title">Koşullu Alanlar</div>
+        <div class="bento-desc">Alan değerine göre diğer alanları göster/gizle. Karmaşık form akışları için dinamik koşul motoru.</div>
+        <div class="tag-list">
+          <span class="tag">== / !=</span>
+          <span class="tag">contains</span>
+          <span class="tag">not_empty</span>
+        </div>
+      </div>
+
+      <div class="bento-card bc-5 reveal">
+        <div class="bento-icon bi-gold">🎨</div>
+        <div class="bento-title">Özel Şablonlar</div>
+        <div class="bento-desc">Her kategoriye farklı Smarty şablonu atanabilir. Hem liste hem de detay sayfaları için ayrı şablon kontrolü.</div>
+      </div>
+
+      <div class="bento-card bc-6 reveal">
+        <div class="bento-icon bi-pink">📐</div>
+        <div class="bento-title">Template Helper Sistemi</div>
+        <div class="bento-desc">İlave alanlara hem detay hem de liste sayfalarında kolayca erişim. Kısa alias değişkenler ile minimum kodla maksimum esneklik.</div>
+        <div class="bento-code">
+          <span class="c-var">{$f_fiyat}</span>        <span class="c-muted">← ham değer</span><br>
+          <span class="c-var">{$fd_website}</span>     <span class="c-muted">← HTML link</span><br>
+          <span class="c-var">{$fl_platform}</span>    <span class="c-muted">← etiket</span><br>
+          <span class="c-var">{$item.f_fiyat}</span>   <span class="c-muted">← listede</span>
+        </div>
+      </div>
+
+      <div class="bento-card bc-7 reveal">
+        <div class="bento-icon bi-red">🖼️</div>
+        <div class="bento-title">Galeri Yükleme</div>
+        <div class="bento-desc">Çoklu resim seçimi, mevcut resimleri koruma ve tek tek silme desteği. Grid görünümlü hazır galeri HTML'i otomatik oluşturulur. Tekrarlanabilir galeri alanı da desteklenir.</div>
+        <div class="tag-list">
+          <span class="tag accent">Ctrl/Cmd ile çoklu seçim</span>
+          <span class="tag green">Otomatik grid HTML</span>
+          <span class="tag gold">Tekli resim silme</span>
+          <span class="tag purple">Mevcut koruma</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RATING -->
+<section class="rating-section" id="oylama">
+  <div class="container">
+    <span class="section-label reveal">Oylama Sistemi</span>
+    <h2 class="section-title reveal">Yıldızlı Değerlendirme</h2>
+    <p class="section-desc reveal">Üyeler ve misafirler için tam işlevli oylama. Detay ve liste sayfalarında kullanın.</p>
+
+    <div class="rating-demo reveal">
+      <div class="rating-visual">
+        <div class="rating-stars-demo">
+          <div class="star-d">★</div>
+          <div class="star-d">★</div>
+          <div class="star-d">★</div>
+          <div class="star-d">★</div>
+          <div class="star-d empty">★</div>
+        </div>
+        <div class="rating-score-big">4.2</div>
+        <div class="rating-meta">87 değerlendirme · 5 üzerinden</div>
+
+        <div class="dist-bars">
+          <div class="dist-row-demo">
+            <span class="dist-lbl">5★</span>
+            <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:48%"></div></div>
+            <span class="dist-cnt">42</span>
+          </div>
+          <div class="dist-row-demo">
+            <span class="dist-lbl">4★</span>
+            <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:32%"></div></div>
+            <span class="dist-cnt">28</span>
+          </div>
+          <div class="dist-row-demo">
+            <span class="dist-lbl">3★</span>
+            <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:12%"></div></div>
+            <span class="dist-cnt">10</span>
+          </div>
+          <div class="dist-row-demo">
+            <span class="dist-lbl">2★</span>
+            <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:5%"></div></div>
+            <span class="dist-cnt">4</span>
+          </div>
+          <div class="dist-row-demo">
+            <span class="dist-lbl">1★</span>
+            <div class="dist-bar-bg"><div class="dist-bar-fill" style="width:3%"></div></div>
+            <span class="dist-cnt">3</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rating-info">
+        <h3>Her İçeriğe Oylama</h3>
+        <p>Detay sayfasında etkileşimli, liste sayfasında kompakt gösterim. Tüm veriler ayrı ayrı template'den erişilebilir.</p>
+        <ul class="rating-feat-list">
+          <li>Üye ve misafir oylama (IP + UID ile tekrar kontrolü)</li>
+          <li>Oyunu değiştirme desteği</li>
+          <li>Ortalama, toplam ve puan dağılımı</li>
+          <li>Tam/yarım/boş yıldız otomatik hesaplama</li>
+          <li>AJAX ile sayfa yenilemesiz kayıt</li>
+          <li>Tablo yoksa otomatik oluşturma</li>
+          <li>Detay ve liste şablonlarında kullanım</li>
+          <li>Özel alan (short field) olarak da kullanılabilir</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEO & TEMPLATE -->
+<section id="template">
+  <div class="container">
+    <span class="section-label reveal">Şablon Sistemi</span>
+    <h2 class="section-title reveal">Template Referansı</h2>
+    <p class="section-desc reveal">Smarty3 şablonlarında kullanabileceğiniz tüm değişkenler ve taglar.</p>
+
+    <div class="tpl-tabs" id="tabs">
+      <button class="tpl-tab active" onclick="switchTab('detail')">Detay Sayfası</button>
+      <button class="tpl-tab" onclick="switchTab('list')">Liste Sayfası</button>
+      <button class="tpl-tab" onclick="switchTab('rating-tpl')">Oylama</button>
+      <button class="tpl-tab" onclick="switchTab('block')">Bloklar</button>
+    </div>
+
+    <div class="tpl-panel active" id="panel-detail">
+      <div class="code-block">
+<span class="cmt">{* ── Temel item bilgileri ── *}</span><br>
+<span class="var">{$item.id}</span>         <span class="cmt">← İçerik ID</span><br>
+<span class="var">{$item.title}</span>      <span class="cmt">← Başlık</span><br>
+<span class="var">{$item.description}</span><span class="cmt">← Açıklama (HTML)</span><br>
+<span class="var">{$item.author}</span>     <span class="cmt">← Yazar adı</span><br>
+<span class="var">{$item.created}</span>    <span class="cmt">← Oluşturma tarihi</span><br>
+<span class="var">{$item.hits}</span>       <span class="cmt">← Görüntülenme sayısı</span><br>
+<span class="var">{$item.url}</span>        <span class="cmt">← SEO URL</span><br>
+<span class="var">{$item.slug}</span>       <span class="cmt">← URL slug</span><br>
+<br>
+<span class="cmt">{* ── İlave alan — kısa alias (tavsiye edilen) ── *}</span><br>
+<span class="var">{$f_fiyat}</span>         <span class="cmt">← Ham değer</span><br>
+<span class="var">{$fd_fiyat}</span>        <span class="cmt">← Display HTML (&lt;a&gt;, &lt;img&gt;, vs.)</span><br>
+<span class="var">{$fl_fiyat}</span>        <span class="cmt">← Etiket ("Fiyat")</span><br>
+<br>
+<span class="cmt">{* ── İlave alan — tam format ── *}</span><br>
+<span class="var">{$field.fiyat.value}</span>          <span class="cmt">← Ham değer</span><br>
+<span class="var">{$field.fiyat.value_display}</span>  <span class="cmt">← HTML</span><br>
+<span class="var">{$field.fiyat.label}</span>         <span class="cmt">← Etiket</span><br>
+<span class="var">{$field.fiyat.type}</span>          <span class="cmt">← Alan tipi</span><br>
+<span class="var">{$field.fiyat.is_repeatable}</span> <span class="cmt">← 0 veya 1</span><br>
+<br>
+<span class="cmt">{* ── Repeatable alan döngüsü ── *}</span><br>
+<span class="tag">{foreach</span> <span class="attr">item</span>=<span class="str">v</span> <span class="attr">from</span>=<span class="str">$field.ozellik.values_display</span><span class="tag">}</span><br>
+&nbsp;&nbsp;<span class="tag">&lt;li&gt;</span><span class="var">{$v}</span><span class="tag">&lt;/li&gt;</span><br>
+<span class="tag">{/foreach}</span>
+      </div>
+    </div>
+
+    <div class="tpl-panel" id="panel-list">
+      <div class="code-block">
+<span class="cmt">{* ── Kategori bilgisi ── *}</span><br>
+<span class="var">{$current_category.name}</span>        <span class="cmt">← Kategori adı</span><br>
+<span class="var">{$current_category.description}</span> <span class="cmt">← Açıklama</span><br>
+<br>
+<span class="cmt">{* ── Item listesi döngüsü ── *}</span><br>
+<span class="tag">{foreach</span> <span class="attr">item</span>=<span class="str">item</span> <span class="attr">from</span>=<span class="str">$items</span><span class="tag">}</span><br>
+&nbsp;&nbsp;<span class="var">{$item.id}</span>         <span class="cmt">← ID</span><br>
+&nbsp;&nbsp;<span class="var">{$item.title}</span>      <span class="cmt">← Başlık</span><br>
+&nbsp;&nbsp;<span class="var">{$item.description}</span><span class="cmt">← Özet (200 karakter)</span><br>
+&nbsp;&nbsp;<span class="var">{$item.url}</span>        <span class="cmt">← SEO URL</span><br>
+&nbsp;&nbsp;<span class="var">{$item.hits}</span>       <span class="cmt">← Görüntülenme</span><br>
+&nbsp;&nbsp;<span class="var">{$item.created}</span>    <span class="cmt">← Tarih</span><br>
+<br>
+&nbsp;&nbsp;<span class="cmt">{* İlave alanlar — kısa alias *}</span><br>
+&nbsp;&nbsp;<span class="var">{$item.f_fiyat}</span>      <span class="cmt">← Ham değer</span><br>
+&nbsp;&nbsp;<span class="var">{$item.fd_logo}</span>      <span class="cmt">← &lt;img&gt; HTML</span><br>
+&nbsp;&nbsp;<span class="var">{$item.fl_fiyat}</span>     <span class="cmt">← Etiket</span><br>
+<br>
+&nbsp;&nbsp;<span class="cmt">{* İlave alanlar — tam format *}</span><br>
+&nbsp;&nbsp;<span class="var">{$item.fields.fiyat.value}</span>       <br>
+&nbsp;&nbsp;<span class="var">{$item.fields.fiyat.value_display}</span><br>
+<span class="tag">{/foreach}</span><br>
+<br>
+<span class="cmt">{* Sayfalama *}</span><br>
+<span class="var">{$pagenav}</span>
+      </div>
+    </div>
+
+    <div class="tpl-panel" id="panel-rating-tpl">
+      <div class="code-block">
+<span class="cmt">{* ── CSS ve JS yükle (bir kez) ── *}</span><br>
+<span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="str">"stylesheet"</span> <span class="attr">href</span>=<span class="str">"{$module_url}/assets/css/xcreate-rating.css"</span><span class="tag">&gt;</span><br>
+<br>
+<span class="cmt">{* ── Detay sayfası: etkileşimli widget ── *}</span><br>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"xcreate-rating-widget"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-item-id</span>=<span class="str">"{$item.id}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-average</span>=<span class="str">"{$rating.average}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-count</span>=<span class="str">"{$rating.count}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-user-vote</span>=<span class="str">"{$rating.user_vote}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-ajax-url</span>=<span class="str">"{$module_url}/ajax/rating.php"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-mode</span>=<span class="str">"full"</span><span class="tag">&gt;&lt;/div&gt;</span><br>
+<br>
+<span class="cmt">{* ── Liste sayfası: kompakt gösterim ── *}</span><br>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"xcreate-rating-widget"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-average</span>=<span class="str">"{$item.rating.average}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-count</span>=<span class="str">"{$item.rating.count}"</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="attr">data-mode</span>=<span class="str">"compact"</span> <span class="attr">data-readonly</span>=<span class="str">"1"</span><span class="tag">&gt;&lt;/div&gt;</span><br>
+<br>
+<span class="cmt">{* ── Ayrı değişkenler olarak ── *}</span><br>
+<span class="var">{$rating.average_str}</span>      <span class="cmt">← "4.2"</span><br>
+<span class="var">{$rating.count}</span>           <span class="cmt">← 87</span><br>
+<span class="var">{$rating.user_vote}</span>       <span class="cmt">← 0 veya 1-5</span><br>
+<span class="var">{$rating.stars_full}</span>      <span class="cmt">← 4</span><br>
+<span class="var">{$rating.stars_half}</span>      <span class="cmt">← 0 veya 1</span><br>
+<span class="var">{$rating.distribution.5}</span>  <span class="cmt">← 5 yıldız oy sayısı</span><br>
+<span class="var">{$rating.dist_pct.5}</span>      <span class="cmt">← 5 yıldız yüzdesi</span><br>
+<br>
+<span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="str">"{$module_url}/assets/js/xcreate-rating.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+      </div>
+    </div>
+
+    <div class="tpl-panel" id="panel-block">
+      <div class="code-block">
+<span class="cmt">{* ── Son İçerikler Bloğu ── *}</span><br>
+<span class="cmt">{* xcreate_block_recent.tpl *}</span><br>
+<br>
+<span class="tag">{foreach</span> <span class="attr">item</span>=<span class="str">item</span> <span class="attr">from</span>=<span class="str">$block.items</span><span class="tag">}</span><br>
+&nbsp;&nbsp;<span class="var">{$item.title}</span>         <span class="cmt">← Başlık</span><br>
+&nbsp;&nbsp;<span class="var">{$item.url}</span>           <span class="cmt">← SEO URL</span><br>
+&nbsp;&nbsp;<span class="var">{$item.category}</span>      <span class="cmt">← Kategori adı</span><br>
+&nbsp;&nbsp;<span class="var">{$item.created}</span>       <span class="cmt">← Tarih</span><br>
+<br>
+&nbsp;&nbsp;<span class="cmt">{* İlave alanlar blokta da çalışır *}</span><br>
+&nbsp;&nbsp;<span class="var">{$item.f_fiyat}</span>       <span class="cmt">← Ham değer</span><br>
+&nbsp;&nbsp;<span class="var">{$item.fd_logo}</span>       <span class="cmt">← &lt;img&gt; HTML</span><br>
+&nbsp;&nbsp;<span class="var">{$item.rating.average_str}</span> <span class="cmt">← Puan</span><br>
+<span class="tag">{/foreach}</span><br>
+<br>
+<span class="cmt">{* ── Blok admin ayarları ── *}</span><br>
+<span class="cmt">{* options[0]: gösterilecek sayı *}</span><br>
+<span class="cmt">{* options[1]: kategori ID (0=tümü) *}</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ADMIN -->
+<section class="admin-section" id="admin">
+  <div class="container">
+    <span class="section-label reveal">Yönetim Paneli</span>
+    <h2 class="section-title reveal">Kapsamlı Admin Paneli</h2>
+    <p class="section-desc reveal">XOOPS yönetim arayüzüyle tam entegre, sezgisel kontrol paneli.</p>
+
+    <div class="admin-features stagger">
+      <div class="admin-feat">
+        <span class="admin-feat-icon">📁</span>
+        <h4>Kategori Yönetimi</h4>
+        <p>Hiyerarşik kategori ağacı. Her kategoriye özel şablon, slug ve alan seti atayın. Kategori silince tüm alt içerikler güvenle temizlenir.</p>
+      </div>
+      <div class="admin-feat">
+        <span class="admin-feat-icon">⚙️</span>
+        <h4>Alan Yönetimi</h4>
+        <p>Sürükle-bırak ağırlık sıralaması. Seçenek listesi düzenleyicisi. Koşul kuralı tanımlayıcısı. Her alan kategoriye özel.</p>
+      </div>
+      <div class="admin-feat">
+        <span class="admin-feat-icon">📋</span>
+        <h4>İçerik Yönetimi</h4>
+        <p>Tüm içerikleri listele, düzenle, sil. Durum kontrolü (taslak / yayında). Yayın tarihi yönetimi.</p>
+      </div>
+      <div class="admin-feat">
+        <span class="admin-feat-icon">🔀</span>
+        <h4>Koşul Motoru</h4>
+        <p>Alan değerine göre diğer alanları göster veya gizle. == / != / contains / not_empty operatörleri. Gerçek zamanlı JavaScript motoru.</p>
+      </div>
+      <div class="admin-feat">
+        <span class="admin-feat-icon">🌐</span>
+        <h4>Çoklu Dil</h4>
+        <p>Türkçe ve İngilizce dil dosyaları hazır. XOOPS dil sistemi ile tam uyumlu.</p>
+      </div>
+      <div class="admin-feat">
+        <span class="admin-feat-icon">🧩</span>
+        <h4>Blok Desteği</h4>
+        <p>Son içerikler bloğu. Kategori filtresi ile özelleştirilebilir. Blok şablonuna ilave alanlar da aktarılır.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEO EXTRAS -->
+<section>
+  <div class="container">
+    <span class="section-label reveal">Teknik Detaylar</span>
+    <h2 class="section-title reveal">Sağlam Altyapı</h2>
+
+    <div class="seo-grid">
+      <div class="info-card reveal">
+        <span class="info-card-icon">🛡️</span>
+        <h3>Güvenlik & Doğrulama</h3>
+        <p>Tüm SQL sorguları hazırlıklı ifadelerle korunur. Dosya yüklemelerinde uzantı ve boyut kontrolü. Koşullu alan validasyonu — gizli alan doğrulanmaz.</p>
+        <div class="tag-list">
+          <span class="tag green">SQL injection koruması</span>
+          <span class="tag green">Dosya tipi kontrolü</span>
+          <span class="tag green">XOOPS güvenlik entegrasyonu</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">⚡</span>
+        <h3>Performans</h3>
+        <p>Sorgu sonuçları PHP dizilerine dönüştürülerek tekrar kullanılır. Helper metodları tablo varlığını cache'ler. Rating tablosu yoksa otomatik oluşturulur, sayfa patlamaz.</p>
+        <div class="tag-list">
+          <span class="tag accent">Sorgu cache</span>
+          <span class="tag accent">Lazy table creation</span>
+          <span class="tag accent">Output buffer yönetimi</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">🗄️</span>
+        <h3>Veritabanı Yapısı</h3>
+        <p>6 optimize edilmiş tablo. Slug'lar unique index ile hız garantisi. Rating sistemi ayrı tabloda, modüler yapı.</p>
+        <div class="tag-list">
+          <span class="tag">xcreate_categories</span>
+          <span class="tag">xcreate_items</span>
+          <span class="tag">xcreate_fields</span>
+          <span class="tag">xcreate_field_options</span>
+          <span class="tag">xcreate_field_values</span>
+          <span class="tag gold">xcreate_ratings</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">🔌</span>
+        <h3>XOOPS Entegrasyonu</h3>
+        <p>XoopsPersistableObjectHandler ile tam ORM desteği. XOOPS Smarty3 uyumlu plugin sistemi. Breadcrumb, sayfalama ve kullanıcı sistemi entegrasyonu.</p>
+        <div class="tag-list">
+          <span class="tag purple">Smarty3 uyumlu</span>
+          <span class="tag purple">XOOPS ORM</span>
+          <span class="tag purple">Preload desteği</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SMARTY PLUGIN -->
+<section class="plugin-section" id="smarty-plugin">
+  <div class="container">
+    <span class="section-label reveal">Smarty3 Plugin</span>
+    <h2 class="section-title reveal">function.xcreate.php</h2>
+    <p class="section-desc reveal">Herhangi bir Smarty şablonundan xcreate içeriklerini tek tag ile çağırın. Modül sayfaları dışında da çalışır.</p>
+
+    <div class="plugin-hero reveal">
+      <div class="plugin-badge">
+        <span class="plugin-badge-icon">&#129513;</span>
+        <span class="plugin-badge-label">Smarty<br>Plugin</span>
+      </div>
+      <div class="plugin-hero-content">
+        <h3>Tema şablonlarından doğrudan xcreate içeriği</h3>
+        <p>XOOPS tema dosyalarınızın (<code style="font-family:var(--font-mono);color:#fde68a;font-size:13px;">.tpl</code>) herhangi bir yerinde <code style="font-family:var(--font-mono);color:#a5b4fc;font-size:13px;">{xcreate}</code> tagını kullanarak xcreate modülündeki içerikleri listeleyin. Kategori filtresi, özel sıralama, alan yükleme ve kendi şablonunuzu belirtin.</p>
+        <div class="tag-list" style="margin-top:16px;">
+          <span class="tag purple">Tema şablonlarında çalışır</span>
+          <span class="tag accent">cat_id veya cat_slug filtresi</span>
+          <span class="tag green">Özel alan desteği</span>
+          <span class="tag gold">4 sıralama modu</span>
+          <span class="tag">Debug modu</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plugin-grid">
+      <div class="info-card reveal">
+        <span class="info-card-icon">&#9889;</span>
+        <h3>Temel Kullanım</h3>
+        <p>En basit haliyle son 10 içeriği kendi şablonunuzla gösterin.</p>
+        <div class="bento-code" style="margin-top:16px;">
+          <span class="c-tag">{xcreate template=</span><span class="c-val">"oyunlar_listesi"</span><span class="c-tag">}</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">&#128194;</span>
+        <h3>Kategori Filtresi</h3>
+        <p>Kategori ID veya slug ile belirli kategoriyi filtreleyin.</p>
+        <div class="bento-code" style="margin-top:16px;">
+          <span class="c-tag">{xcreate</span><br>
+          &nbsp;&nbsp;<span class="c-attr">cat_slug=</span><span class="c-val">"haberler"</span><br>
+          &nbsp;&nbsp;<span class="c-attr">template=</span><span class="c-val">"haber_karti"</span><br>
+          &nbsp;&nbsp;<span class="c-attr">limit=</span><span class="c-val">"5"</span><span class="c-tag">}</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">&#128256;</span>
+        <h3>Sıralama &amp; Sayfalama</h3>
+        <p>Rastgele, tarihe, başlığa veya görüntülenmeye göre sıralayın.</p>
+        <div class="bento-code" style="margin-top:16px;">
+          <span class="c-tag">{xcreate</span><br>
+          &nbsp;&nbsp;<span class="c-attr">order=</span><span class="c-val">"random"</span><br>
+          &nbsp;&nbsp;<span class="c-attr">limit=</span><span class="c-val">"6"</span><br>
+          &nbsp;&nbsp;<span class="c-attr">from=</span><span class="c-val">"0"</span><span class="c-tag">}</span>
+        </div>
+      </div>
+      <div class="info-card reveal">
+        <span class="info-card-icon">&#128027;</span>
+        <h3>Debug Modu</h3>
+        <p>HTML yorumlarında parametreler, template yolları ve alan sayılarını görün.</p>
+        <div class="bento-code" style="margin-top:16px;">
+          <span class="c-tag">{xcreate</span><br>
+          &nbsp;&nbsp;<span class="c-attr">template=</span><span class="c-val">"test"</span><br>
+          &nbsp;&nbsp;<span class="c-attr">debug=</span><span class="c-val">"1"</span><span class="c-tag">}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="plugin-params reveal">
+      <h3>&#9881;&#65039; Tüm Parametreler</h3>
+      <table class="param-table">
+        <thead><tr><th>Parametre</th><th>Tip</th><th>Varsayılan</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><span class="param-name">template</span></td><td><span class="param-type">string</span></td><td><span class="param-default">"xcreate_custom"</span></td><td class="param-desc">Kullanılacak şablon adı (.tpl uzantısı olmadan). Tema klasörü önce, sonra xcreate/templates/ aranır.</td></tr>
+          <tr><td><span class="param-name">category</span></td><td><span class="param-type">int</span></td><td><span class="param-default">0</span></td><td class="param-desc">Kategori ID ile filtrele. 0 = tüm kategoriler.</td></tr>
+          <tr><td><span class="param-name">cat_slug</span></td><td><span class="param-type">string</span></td><td><span class="param-default">""</span></td><td class="param-desc">Kategori slug ile filtrele. category parametresine göre önceliklidir.</td></tr>
+          <tr><td><span class="param-name">limit</span></td><td><span class="param-type">int</span></td><td><span class="param-default">10</span></td><td class="param-desc">Kaç içerik getirileceği.</td></tr>
+          <tr><td><span class="param-name">from</span></td><td><span class="param-type">int</span></td><td><span class="param-default">0</span></td><td class="param-desc">Başlangıç offset. Sayfalama için kullanılır.</td></tr>
+          <tr><td><span class="param-name">order</span></td><td><span class="param-type">string</span></td><td><span class="param-default">"date"</span></td><td class="param-desc">Sıralama: <code style="font-family:var(--font-mono);color:#fde68a;">date</code> · <code style="font-family:var(--font-mono);color:#fde68a;">title</code> · <code style="font-family:var(--font-mono);color:#fde68a;">hits</code> · <code style="font-family:var(--font-mono);color:#fde68a;">random</code></td></tr>
+          <tr><td><span class="param-name">sort</span></td><td><span class="param-type">string</span></td><td><span class="param-default">"DESC"</span></td><td class="param-desc">Sıralama yönü: <code style="font-family:var(--font-mono);color:#fde68a;">DESC</code> veya <code style="font-family:var(--font-mono);color:#fde68a;">ASC</code></td></tr>
+          <tr><td><span class="param-name">status</span></td><td><span class="param-type">int</span></td><td><span class="param-default">1</span></td><td class="param-desc">1 = yayında, 0 = taslak, 2 = bekliyor.</td></tr>
+          <tr><td><span class="param-name">fields</span></td><td><span class="param-type">int</span></td><td><span class="param-default">1</span></td><td class="param-desc">1 = özel alanları da getir. 0 = kapalı (performans için).</td></tr>
+          <tr><td><span class="param-name">debug</span></td><td><span class="param-type">bool</span></td><td><span class="param-default">—</span></td><td class="param-desc">Parametre varsa aktif. HTML kaynak kodunda debug yorumları görünür.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="plugin-vars reveal">
+      <h3>&#128203; Template Değişkenleri</h3>
+      <div class="var-group">
+        <span class="var-group-title">Genel Değişkenler</span>
+        <div class="var-list">
+          <div class="var-row"><span class="var-name">{$xcreate_items}</span><span class="var-desc">İçerik dizisi — tüm item'lar</span></div>
+          <div class="var-row"><span class="var-name">{$xcreate_count}</span><span class="var-desc">Dönen içerik sayısı</span></div>
+          <div class="var-row"><span class="var-name">{$xcreate_category.id}</span><span class="var-desc">Aktif kategori ID</span></div>
+          <div class="var-row"><span class="var-name">{$xcreate_category.name}</span><span class="var-desc">Aktif kategori adı</span></div>
+          <div class="var-row"><span class="var-name">{$xcreate_category.slug}</span><span class="var-desc">Aktif kategori slug</span></div>
+          <div class="var-row"><span class="var-name">{$xcreate_category.url}</span><span class="var-desc">Aktif kategori URL (SEO veya standart)</span></div>
+        </div>
+      </div>
+      <div class="var-group">
+        <span class="var-group-title">Her $item İçinde — Temel Alanlar</span>
+        <div class="var-list">
+          <div class="var-row"><span class="var-name">{$item.id}</span><span class="var-desc">İçerik ID</span></div>
+          <div class="var-row"><span class="var-name">{$item.title}</span><span class="var-desc">Başlık</span></div>
+          <div class="var-row"><span class="var-name">{$item.description}</span><span class="var-desc">Tam açıklama (ham HTML)</span></div>
+          <div class="var-row"><span class="var-name">{$item.description_short}</span><span class="var-desc">Özet (strip_tags + 200 karakter)</span></div>
+          <div class="var-row"><span class="var-name">{$item.slug}</span><span class="var-desc">SEO slug</span></div>
+          <div class="var-row"><span class="var-name">{$item.hits}</span><span class="var-desc">Görüntülenme sayısı</span></div>
+          <div class="var-row"><span class="var-name">{$item.url}</span><span class="var-desc">İçerik URL (SEO veya standart)</span></div>
+          <div class="var-row"><span class="var-name">{$item.cat_url}</span><span class="var-desc">Kategori URL</span></div>
+          <div class="var-row"><span class="var-name">{$item.cat_name}</span><span class="var-desc">Kategori adı</span></div>
+          <div class="var-row"><span class="var-name">{$item.cat_slug}</span><span class="var-desc">Kategori slug</span></div>
+        </div>
+      </div>
+      <div class="var-group">
+        <span class="var-group-title">Her $item İçinde — Tarih &amp; Yazar</span>
+        <div class="var-list">
+          <div class="var-row"><span class="var-name">{$item.author}</span><span class="var-desc">Yazar kullanıcı adı</span></div>
+          <div class="var-row"><span class="var-name">{$item.author_link}</span><span class="var-desc">Yazar profil linki</span></div>
+          <div class="var-row"><span class="var-name">{$item.uid}</span><span class="var-desc">Yazar kullanıcı ID</span></div>
+          <div class="var-row"><span class="var-name">{$item.created}</span><span class="var-desc">Oluşturma tarihi — uzun format</span></div>
+          <div class="var-row"><span class="var-name">{$item.created_short}</span><span class="var-desc">Oluşturma tarihi — kısa format</span></div>
+          <div class="var-row"><span class="var-name">{$item.created_raw}</span><span class="var-desc">Unix timestamp (ham)</span></div>
+        </div>
+      </div>
+      <div class="var-group">
+        <span class="var-group-title">Her $item İçinde — Özel Alanlar (fields=1 ise)</span>
+        <div class="var-list">
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.label}</span><span class="var-desc">Alan etiketi</span></div>
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.type}</span><span class="var-desc">Alan tipi (text, image, gallery, url, …)</span></div>
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.value}</span><span class="var-desc">İlk metin değeri (ham)</span></div>
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.values}</span><span class="var-desc">Tüm metin değerleri dizisi (repeatable için)</span></div>
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.file_url}</span><span class="var-desc">İlk dosya/resim URL (image · file · gallery)</span></div>
+          <div class="var-row"><span class="var-name">{$item.fields.ALAN_ADI.file_urls}</span><span class="var-desc">Tüm dosya URL'leri dizisi (gallery için)</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card reveal" style="margin-top:32px;">
+      <span class="info-card-icon">&#128230;</span>
+      <h3>Kurulum — 3 Adım</h3>
+      <p>Plugin dosyasını kopyalayın, herhangi bir yapılandırma gerekmez.</p>
+      <div class="install-steps">
+        <div class="install-step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <div class="step-title">Plugin dosyasını kopyalayın</div>
+            <div class="step-desc">Aşağıdaki iki konumdan birini tercih edin:</div>
+            <code class="step-path">/xoops_lib/modules/protector/../smarty/plugins/function.xcreate.php</code>
+            <br><code class="step-path" style="margin-top:6px;">/class/smarty3_plugins/function.xcreate.php</code>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <div class="step-title">Şablonunuzu oluşturun</div>
+            <div class="step-desc">Tema klasörünüzde veya xcreate/templates/ içinde .tpl dosyası oluşturun.</div>
+            <code class="step-path">/themes/TEMA_ADI/templates/kendi_sablonunuz.tpl</code>
+          </div>
+        </div>
+        <div class="install-step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <div class="step-title">Herhangi bir .tpl dosyasında kullanın</div>
+            <div class="step-desc">Xcreate modülü kurulu olduğu sürece tema şablonlarının herhangi bir yerinde çalışır.</div>
+            <code class="step-path">{xcreate cat_slug="haberler" template="haber_karti" limit="5"}</code>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta-section" id="kurulum">
+  <div class="container">
+    <h2 class="reveal">Hemen Kullanmaya<br>Başlayın</h2>
+    <p class="reveal">XOOPS sitenize xcreate modülünü yükleyin,<br>dakikalar içinde içerik yönetiminizi özelleştirin.</p>
+    <div class="hero-actions reveal">
+      <a href="#" class="btn-primary">⬇ Modülü İndir</a>
+      <a href="#template" class="btn-secondary">{ } Template Docs</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">xcreate</div>
+  <div class="footer-copy">v1.6 · XOOPS CMS Modülü</div>
+  <div class="footer-badge">Eren Yumak tarafından kodlanmıştır · Aymak</div>
+</footer>
+
+<script>
+/* ── Tab sistemi ── */
+function switchTab(id) {
+  document.querySelectorAll('.tpl-tab').forEach(function(t, i) {
+    t.classList.toggle('active', ['detail','list','rating-tpl','block'][i] === id);
+  });
+  document.querySelectorAll('.tpl-panel').forEach(function(p) {
+    p.classList.toggle('active', p.id === 'panel-' + id);
+  });
+}
+
+/* ── Scroll reveal ── */
+var observer = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal, .stagger').forEach(function(el) {
+  observer.observe(el);
+});
+
+/* ── Dist bar animasyonu ── */
+var barObserver = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.dist-bar-fill').forEach(function(bar) {
+        var w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(function() { bar.style.width = w; }, 100);
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+var ratingDemo = document.querySelector('.rating-demo');
+if (ratingDemo) barObserver.observe(ratingDemo);
+</script>
+
+</body>
+</html>

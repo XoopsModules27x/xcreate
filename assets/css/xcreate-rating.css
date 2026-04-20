@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════════════
+   xcreate-rating.css  —  Yıldızlı oylama widget stilleri
+   Eren Yumak tarafından kodlanmıştır — Aymak
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Kapsayıcı ──────────────────────────────────────── */
+.xcreate-rating {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: inherit;
+}
+
+/* ── Yıldız satırı ─────────────────────────────────── */
+.xcreate-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    line-height: 1;
+}
+
+.xcreate-stars .star {
+    font-size: 22px;
+    color: #d1d5db;           /* boş */
+    transition: color 0.15s, transform 0.1s;
+    cursor: default;
+}
+.xcreate-stars .star.full  { color: #f59e0b; }
+.xcreate-stars .star.half  { color: #f59e0b; }  /* CSS half yıldız */
+.xcreate-stars .star.empty { color: #d1d5db; }
+
+/* ── Etkileşimli (oy verme) modunda yıldızlar ──────── */
+.xcreate-rating-interactive .xcreate-stars .star {
+    cursor: pointer;
+    font-size: 26px;
+}
+.xcreate-rating-interactive .xcreate-stars .star:hover,
+.xcreate-rating-interactive .xcreate-stars .star.hover {
+    color: #fbbf24;
+    transform: scale(1.2);
+}
+.xcreate-rating-interactive .xcreate-stars .star.selected {
+    color: #f59e0b;
+    transform: scale(1.15);
+}
+.xcreate-rating-interactive.voted .xcreate-stars .star {
+    cursor: default;
+}
+.xcreate-rating-interactive.voted .xcreate-stars .star:hover {
+    transform: none;
+    color: #f59e0b;
+}
+.xcreate-rating-interactive.voted .xcreate-stars .star.empty:hover {
+    color: #d1d5db;
+}
+
+/* ── Özet metin satırı ─────────────────────────────── */
+.xcreate-rating-summary {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 14px;
+    color: #6b7280;
+}
+.xcreate-rating-summary .avg-score {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1f2937;
+}
+.xcreate-rating-summary .max-score {
+    font-size: 13px;
+    color: #9ca3af;
+}
+.xcreate-rating-summary .vote-count {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ── Dağılım çubuğu (detay sayfasında opsiyonel) ───── */
+.xcreate-rating-distribution {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+}
+.xcreate-rating-distribution .dist-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+.xcreate-rating-distribution .dist-label {
+    width: 18px;
+    text-align: right;
+    color: #6b7280;
+    font-size: 12px;
+}
+.xcreate-rating-distribution .dist-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.xcreate-rating-distribution .dist-bar {
+    height: 100%;
+    background: #f59e0b;
+    border-radius: 4px;
+    transition: width 0.4s ease;
+}
+.xcreate-rating-distribution .dist-count {
+    width: 28px;
+    text-align: right;
+    color: #9ca3af;
+    font-size: 12px;
+}
+
+/* ── Durum mesajları ────────────────────────────────── */
+.xcreate-rating-msg {
+    font-size: 13px;
+    color: #6b7280;
+    min-height: 18px;
+    transition: color 0.2s;
+}
+.xcreate-rating-msg.success { color: #16a34a; }
+.xcreate-rating-msg.error   { color: #dc2626; }
+
+/* ── Compact (liste/short alan) modu ───────────────── */
+.xcreate-rating-compact {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+}
+.xcreate-rating-compact .star {
+    font-size: 14px;
+    color: #d1d5db;
+}
+.xcreate-rating-compact .star.full { color: #f59e0b; }
+.xcreate-rating-compact .star.half { color: #f59e0b; }
+.xcreate-rating-compact .avg-score {
+    font-weight: 600;
+    color: #1f2937;
+}
+.xcreate-rating-compact .vote-count {
+    color: #9ca3af;
+}

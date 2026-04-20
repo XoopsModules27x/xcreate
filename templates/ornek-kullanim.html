@@ -1,0 +1,43 @@
+
+
+
+			Tekli Değer Örneği
+			 <{if $item.fields.rozet_etikerleri.value}>
+            <p><strong><{$item.fields.rozet_etikerleri.label}>:</strong>
+               <{$item.fields.rozet_etikerleri.value}> TL</p>
+            <{/if}>
+			
+			
+			
+		Çoklu Değer Örneği	
+		<{if $item.fields.rozet_etikerleri.values}>	
+	     <div class="mc-badges-tl">
+		  <{foreach item=v from=$item.fields.rozet_etikerleri.values_display}>
+			<span class="badge badge-cms" style="font-size:10px"><{$v}></span>
+		  <{/foreach}>
+		  </div>
+		  <{/if}>
+		
+		
+		
+		
+
+		
+		Resim Örneği:
+		   <{if $item.fields.modul_ikonu.value}>
+                <img src="<{$item.fields.modul_ikonu.value}>" alt="<{$item.title}>">
+            <{/if}>
+			
+			
+			
+
+
+			 <{if $item.fields.ucret_durumu.value}>
+				<div class="mc-badges-tr"><span class="badge badge-free" style="font-size:10px"><{$item.fields.ucret_durumu.value}></span></div>
+            <{/if}>
+			
+			
+			
+			
+		
+			

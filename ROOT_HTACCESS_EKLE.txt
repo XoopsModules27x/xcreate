@@ -1,0 +1,17 @@
+== XOOPS KÖKÜ .htaccess'e eklenecek kurallar ==
+
+E�er site kökünde .htaccess yoksa oluştur, varsa aşağıdaki RewriteRule satırını
+mevcut RewriteEngine On bloğunun içine ekle:
+
+  # Xcreate SEO URL - kategori/icerik yönlendirmesi
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^modules/xcreate/([a-z0-9\-]+)/([a-z0-9\-]+)/?$ modules/xcreate/item.php?cat_slug=$1&item_slug=$2 [L,QSA]
+
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^modules/xcreate/([a-z0-9\-]+)/?$ modules/xcreate/index.php?cat_slug=$1 [L,QSA]
+
+NOT: Bu kurallar sadece XOOPS kökünde .htaccess kullanılıyorsa gereklidir.
+     modules/xcreate/ klasörüne koyulan .htaccess de aynı işi görür.
+     İkisi aynı anda aktif olursa çakışma olmaz, sadece birini kullanın.

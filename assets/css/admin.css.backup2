@@ -1,0 +1,487 @@
+/**
+ * XCreate Admin Panel - Modern & Elegant CSS
+ * Professional admin interface with gradient buttons and smooth animations
+ */
+
+/* General Layout */
+.xcreate-admin {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #333;
+    background: #f5f7fa;
+}
+
+/* Page Header */
+.xcreate-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    margin: -20px -20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+}
+
+.xcreate-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.xcreate-header p {
+    margin: 10px 0 0;
+    opacity: 0.95;
+    font-size: 15px;
+}
+
+/* Action Buttons Container */
+.xcreate-actions {
+    margin-bottom: 25px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   MODERN GRADIENT BUTTONS - ELEGANT & PROFESSIONAL
+   ============================================ */
+
+.btn-customfields,
+.btn-xcreate {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white !important;
+    text-decoration: none !important;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Shimmer effect on hover */
+.btn-customfields::before,
+.btn-xcreate::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+}
+
+.btn-customfields:hover::before,
+.btn-xcreate:hover::before {
+    left: 100%;
+}
+
+.btn-customfields:hover,
+.btn-xcreate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.45);
+    color: white !important;
+}
+
+.btn-customfields:active,
+.btn-xcreate:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Success Button - Green Gradient */
+.btn-xcreate-success,
+.btn-customfields.btn-xcreate-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-xcreate-success:hover,
+.btn-customfields.btn-xcreate-success:hover {
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.45);
+}
+
+/* Danger Button - Red Gradient */
+.btn-xcreate-danger,
+.btn-customfields.btn-xcreate-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-xcreate-danger:hover,
+.btn-customfields.btn-xcreate-danger:hover {
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.45);
+}
+
+/* Secondary Button - Gray Gradient */
+.btn-xcreate-secondary,
+.btn-customfields.btn-xcreate-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+}
+
+.btn-xcreate-secondary:hover,
+.btn-customfields.btn-xcreate-secondary:hover {
+    box-shadow: 0 8px 20px rgba(107, 114, 128, 0.45);
+}
+
+/* Warning Button - Orange Gradient */
+.btn-xcreate-warning,
+.btn-customfields.btn-xcreate-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.btn-xcreate-warning:hover,
+.btn-customfields.btn-xcreate-warning:hover {
+    box-shadow: 0 8px 20px rgba(245, 158, 11, 0.45);
+}
+
+/* Info Button - Blue Gradient */
+.btn-xcreate-info,
+.btn-customfields.btn-xcreate-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-xcreate-info:hover,
+.btn-customfields.btn-xcreate-info:hover {
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.45);
+}
+
+/* Button Sizes */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 13px;
+    border-radius: 8px;
+}
+
+.btn-lg {
+    padding: 16px 32px;
+    font-size: 16px;
+    border-radius: 12px;
+}
+
+/* Modern Table Styles */
+.table-customfields,
+.table-xcreate {
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table-customfields thead,
+.table-xcreate thead {
+    background: linear-gradient(to right, #f9fafb, #f3f4f6);
+}
+
+.table-customfields thead th,
+.table-xcreate thead th {
+    padding: 18px 20px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 13px;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.table-customfields tbody tr,
+.table-xcreate tbody tr {
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.table-customfields tbody tr:hover,
+.table-xcreate tbody tr:hover {
+    background: #f9fafb;
+    transform: scale(1.005);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.table-customfields tbody tr:last-child,
+.table-xcreate tbody tr:last-child {
+    border-bottom: none;
+}
+
+.table-customfields tbody td,
+.table-xcreate tbody td {
+    padding: 16px 20px;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+/* Badge Styles */
+.badge-xcreate {
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.badge-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    color: #065f46;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: #991b1b;
+}
+
+.badge-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    color: #92400e;
+}
+
+.badge-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+    color: #1e40af;
+}
+
+.badge-secondary {
+    background: linear-gradient(135deg, #e5e7eb 0%, #d1d5db 100%);
+    color: #374151;
+}
+
+/* Alert Boxes */
+.alert-xcreate {
+    padding: 18px 22px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border-left: 5px solid;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.alert-xcreate::before {
+    content: "ℹ";
+    font-size: 24px;
+    margin-right: 14px;
+    font-weight: bold;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%);
+    border-color: #3b82f6;
+    color: #1e40af;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #d1fae5 0%, #d1f4e0 100%);
+    border-color: #10b981;
+    color: #065f46;
+}
+
+.alert-success::before {
+    content: "✓";
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef4d4 100%);
+    border-color: #f59e0b;
+    color: #92400e;
+}
+
+.alert-warning::before {
+    content: "⚠";
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fed7d7 100%);
+    border-color: #ef4444;
+    color: #991b1b;
+}
+
+.alert-danger::before {
+    content: "✕";
+}
+
+/* Panel Styles */
+.panel-xcreate {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.panel-xcreate .panel-heading {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+    padding: 22px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.panel-xcreate .panel-heading h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.panel-xcreate .panel-body {
+    padding: 25px;
+}
+
+/* Status Indicators */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator::before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+}
+
+.status-active::before {
+    background: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.status-inactive::before {
+    background: #ef4444;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.2);
+    animation: none;
+}
+
+/* Action Links */
+.action-links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.action-links a {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    padding: 6px 12px;
+    border-radius: 6px;
+}
+
+.action-links a:hover {
+    color: #5568d3;
+    background: #f3f4f6;
+    transform: translateX(2px);
+}
+
+.action-links a.delete-link {
+    color: #ef4444;
+}
+
+.action-links a.delete-link:hover {
+    color: #dc2626;
+    background: #fee2e2;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 70px 20px;
+    color: #9ca3af;
+}
+
+.empty-state-icon {
+    font-size: 56px;
+    margin-bottom: 18px;
+    opacity: 0.6;
+}
+
+.empty-state-text {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #6b7280;
+}
+
+.empty-state-description {
+    font-size: 15px;
+    color: #9ca3af;
+    margin-bottom: 25px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .xcreate-header {
+        padding: 20px;
+        margin: -15px -15px 20px;
+        border-radius: 10px;
+    }
+    
+    .xcreate-header h2 {
+        font-size: 22px;
+    }
+    
+    .btn-customfields,
+    .btn-xcreate {
+        padding: 10px 18px;
+        font-size: 13px;
+    }
+    
+    .table-customfields,
+    .table-xcreate {
+        font-size: 13px;
+    }
+    
+    .table-customfields thead th,
+    .table-customfields tbody td,
+    .table-xcreate thead th,
+    .table-xcreate tbody td {
+        padding: 12px 10px;
+    }
+    
+    .action-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Smooth loading animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.xcreate-admin > * {
+    animation: fadeIn 0.4s ease-out;
+}
